@@ -3,7 +3,7 @@ import React from 'react'
 import { CustomButtonProps } from '@/types'
 import { colors, radius } from '@/constants/theme'
 import { verticalScale } from '@/utils/styling'
-import Loading from './loading'
+import Loading from './Loading'
 
 const Button = ({
     style,

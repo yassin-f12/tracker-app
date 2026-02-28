@@ -10,11 +10,13 @@ const Typo = ({
     children,
     style,
     textProps = {},
+    textAlign = 'left',
 }: TypoProps) => {
     const textStyle: TextStyle = {
         fontSize: size? verticalScale(size): verticalScale(18),
         color,
-        fontWeight
+        fontWeight,
+        textAlign
     }
   return (
     <Text style={[textStyle, style]} {...textProps}>
