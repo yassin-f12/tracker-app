@@ -5,7 +5,8 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ], 
+      "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
     }
   },
   "include": [
@@ -15,3 +16,10 @@
     "expo-env.d.ts"
   ]
 }
+
+/*C'est le point le plus subtil. Firebase a **deux versions** de son module auth :
+- `index.d.ts` → pour le web
+- `index.rn.d.ts` → pour React Native
+
+Par défaut, TypeScript charge la version web, qui **ne contient pas** `getReactNativePersistence`. Ce path alias force TypeScript à utiliser les types React Native, ce qui fait que la fonction est reconnue sans erreur.
+*/

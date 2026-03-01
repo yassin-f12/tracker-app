@@ -1,40 +1,44 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
-import { CustomButtonProps } from '@/types'
-import { colors, radius } from '@/constants/theme'
-import { verticalScale } from '@/utils/styling'
-import Loading from './Loading'
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { CustomButtonProps } from "@/types";
+import { colors, radius } from "@/constants/theme";
+import { verticalScale } from "@/utils/styling";
+import Loading from "./Loading";
 
 const Button = ({
-    style,
-    onPress,
-    loading = false,
-    children
+  style,
+  onPress,
+  loading = false,
+  disabled = false,
+  children,
 }: CustomButtonProps) => {
-
-    if(loading) {
-        return (
-            <View style={[styles.button, style, {backgroundColor: 'transparent'}]}>
-                <Loading />
-            </View>
-        )
-    }
+  if (loading) {
+    return (
+      <View style={[styles.button, style, { backgroundColor: "transparent" }]}>
+        <Loading />
+      </View>
+    );
+  }
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.button, style, disabled && { opacity: 0.5 }]}
+      disabled={disabled}
+    >
       {children}
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default Button
+export default Button;
 
 const styles = StyleSheet.create({
-    button: {
-        backgroundColor: colors.primary,
-        borderRadius: radius._17,
-        borderCurve: 'continuous',
-        height: verticalScale(52),
-        justifyContent: 'center',
-        alignItems: "center",
-    },
-})
+  button: {
+    backgroundColor: colors.primary,
+    borderRadius: radius._17,
+    borderCurve: "continuous",
+    height: verticalScale(52),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
