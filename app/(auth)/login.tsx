@@ -6,24 +6,29 @@ import { verticalScale } from "@/utils/styling";
 import BackButton from "@/components/BackButton";
 import Typo from "@/components/Typo";
 import Input from "@/components/Input";
-import * as Icons from "phosphor-react-native";
+import { LockIcon, AtIcon } from "phosphor-react-native";
 import Button from "@/components/Button";
 import { useRouter } from "expo-router";
+import { useAuth } from "@/contexts/authContext";
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [ isLoading, setIsLoading ] = useState(false);
   const router = useRouter();
+  const { login: loginUser } = useAuth(); 
 
   const handleSubmit = async () => {
     if(!email || !password) {
       Alert.alert('Se connecter', "Les champs sont vides")
       return
     }
-    console.log('email: ', email);
-    console.log('password: ', password);
-    console.log('okay double check');
+    setIsLoading(true);
+    const res = await loginUser(email.trim().toLowerCase(), password);
+    setIsLoading(false);
+    if(!res.success) {
+      Alert.alert("connexion :", res.msg);
+    }
   }
 
   return (
@@ -47,9 +52,9 @@ const Login = () => {
           <Input
             placeholder="Votre e-mail"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(value) => setEmail(value.trim().toLowerCase())}
             icon={
-              <Icons.AtIcon
+              <AtIcon
                 size={verticalScale(26)}
                 color={colors.neutral300}
                 weight="fill"
@@ -62,7 +67,7 @@ const Login = () => {
             secureTextEntry
             onChangeText={setPassword}
             icon={
-              <Icons.LockIcon
+              <LockIcon
                 size={verticalScale(26)}
                 color={colors.neutral300}
                 weight="fill"

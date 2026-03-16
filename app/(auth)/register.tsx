@@ -6,7 +6,7 @@ import { verticalScale } from "@/utils/styling";
 import BackButton from "@/components/BackButton";
 import Typo from "@/components/Typo";
 import Input from "@/components/Input";
-import * as Icons from "phosphor-react-native";
+import { LockIcon, AtIcon, UserIcon } from "phosphor-react-native";
 import Button from "@/components/Button";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/authContext";
@@ -25,7 +25,7 @@ const Register = () => {
       return;
     }
     setIsLoading(true);
-    const res = await registerUser(email, password, name);
+    const res = await registerUser(email.trim().toLowerCase(), password, name);
     setIsLoading(false);
     console.log('resultat register :', res);
     if (!res.success) {
@@ -53,7 +53,7 @@ const Register = () => {
             value={name}
             onChangeText={setName}
             icon={
-              <Icons.UserIcon
+              <UserIcon
                 size={verticalScale(26)}
                 color={colors.neutral300}
                 weight="fill"
@@ -63,9 +63,9 @@ const Register = () => {
           <Input
             placeholder="Votre e-mail"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(value) => setEmail(value.trim().toLowerCase())}
             icon={
-              <Icons.AtIcon
+              <AtIcon
                 size={verticalScale(26)}
                 color={colors.neutral300}
                 weight="fill"
@@ -78,7 +78,7 @@ const Register = () => {
             secureTextEntry
             onChangeText={setPassword}
             icon={
-              <Icons.LockIcon
+              <LockIcon
                 size={verticalScale(26)}
                 color={colors.neutral300}
                 weight="fill"
@@ -89,7 +89,7 @@ const Register = () => {
           <Button
             loading={isLoading}
             onPress={handleSubmit}
-            disabled={!email || !password || isLoading}
+            disabled={!email || !password || !name || isLoading}
           >
             <Typo fontWeight={700} color={colors.black} size={21}>
               Créer mon compte

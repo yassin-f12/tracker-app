@@ -1,4 +1,5 @@
 import { auth, firestore } from "@/config/firebase";
+import { getFirebaseAuthErrorMessage } from "@/config/firebaseErrors";
 import { AuthContextType, UserType } from "@/types";
 import { useRouter } from "expo-router";
 import {
@@ -25,6 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           email: firebaseUser?.email,
           name: firebaseUser?.displayName,
         });
+        updateUserData(firebaseUser.uid);
         router.replace("/(tabs)");
       } else {
         setUser(null);
@@ -38,10 +40,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return { success: true };
-    } catch (error: unknown) {
-      const msg =
-        error instanceof Error ? error.message : "Une erreur est survenue";
-      return { success: false, msg };
+    } catch (error) {
+      return {
+        success: false,
+        msg: getFirebaseAuthErrorMessage(error),
+      }
     }
   };
   const register = async (email: string, password: string, name: string) => {
@@ -57,10 +60,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         uid: response?.user?.uid,
       });
       return { success: true };
-    } catch (error: unknown) {
-      const msg =
-        error instanceof Error ? error.message : "Une erreur est survenue";
-      return { success: false, msg };
+    } catch (error) {
+      return {
+        success: false,
+        msg: getFirebaseAuthErrorMessage(error),
+      }
     }
   };
 

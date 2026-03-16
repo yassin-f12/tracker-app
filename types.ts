@@ -16,6 +16,8 @@ import {
   ViewStyle,
 } from "react-native";
 
+export type ImageSource = string | number | { uri: string } | null;
+
 export type ScreenWrapperProps = {
   style?: ViewStyle;
   children: React.ReactNode;
@@ -29,14 +31,14 @@ export type accountOptionType = {
   title: string;
   icon: React.ReactNode;
   bgColor: string;
-  routeName?: any;
+  routeName?: Href;
 };
 
 export type TypoProps = {
   size?: number;
   color?: string;
   fontWeight?: TextStyle["fontWeight"];
-  children: any | null;
+  children: ReactNode;
   style?: TextStyle;
   textProps?: TextProps;
   textAlign?: TextStyle["textAlign"];
@@ -77,7 +79,7 @@ export type TransactionType = {
   category?: string;
   date: Date | Timestamp | string;
   description?: string;
-  image?: any;
+  image?: ImageSource;
   uid?: string;
   walletId: string;
 };
@@ -102,7 +104,7 @@ export type TransactionListType = {
 export type TransactionItemProps = {
   item: TransactionType;
   index: number;
-  handleClick: Function;
+  handleClick: (item: TransactionType) => void;
 };
 
 export interface InputProps extends TextInputProps {
@@ -135,17 +137,17 @@ export type UserType = {
   uid?: string;
   email?: string | null;
   name: string | null;
-  image?: any;
+  image?: ImageSource;
 } | null;
 
 export type UserDataType = {
   name: string;
-  image?: any;
+  image?: ImageSource;
 };
 
 export type AuthContextType = {
   user: UserType;
-  setUser: Function;
+  setUser: (user: UserType) => void;
   login: (
     email: string,
     password: string
@@ -173,4 +175,8 @@ export type WalletType = {
   image: any;
   uid?: string;
   created?: Date;
+};
+
+export type TabBarIconsType = {
+  [key: string]: (isFocused: boolean) => React.ReactElement;
 };
