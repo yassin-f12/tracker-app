@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  updateEmail,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -91,12 +92,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const updateUserEmail = async (email: string) => {
+    if (auth.currentUser) {
+      await updateEmail(auth.currentUser, email);
+    }
+  };
+
   const contextValue: AuthContextType = {
     user,
     setUser,
     login,
     register,
     updateUserData,
+    updateUserEmail,
   };
 
   return (

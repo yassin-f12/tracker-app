@@ -49,7 +49,7 @@ const Register = () => {
             Créez votre compte maintenant pour suivre toutes vos dépenses
           </Typo>
           <Input
-            placeholder="Votre prénom"
+            placeholder="Votre pseudo"
             value={name}
             onChangeText={setName}
             icon={

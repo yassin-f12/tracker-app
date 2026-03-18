@@ -1,18 +1,143 @@
-import { StyleSheet, Text } from 'react-native'
-import React from 'react'
-import ScreenWrapper from '@/components/ScreenWrapper'
-import { colors, radius, spacingX, spacingY } from '@/constants/theme'
-import { verticalScale } from '@/utils/styling'
+import Header from "@/components/Header";
+import ScreenWrapper from "@/components/ScreenWrapper";
+import Typo from "@/components/Typo";
+import { auth } from "@/config/firebase";
+import { colors, radius, spacingX, spacingY } from "@/constants/theme";
+import { useAuth } from "@/contexts/authContext";
+import { getProfileImage } from "@/service/imageService";
+import { accountOptionType } from "@/types";
+import { verticalScale } from "@/utils/styling";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import { signOut } from "firebase/auth";
+import {
+  CaretRightIcon,
+  GearSixIcon,
+  LockIcon,
+  PowerIcon,
+  UserIcon,
+} from "phosphor-react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
+
+const accountOptions: accountOptionType[] = [
+  {
+    title: "Modifier le profil",
+    icon: <UserIcon size={26} color={colors.white} weight="fill" />,
+    routeName: "/(modals)/profileModal",
+    bgColor: "#6366f1",
+  },
+  {
+    title: "Paramètres",
+    icon: <GearSixIcon size={26} color={colors.white} weight="fill" />,
+    bgColor: "#059669",
+  },
+  {
+    title: "Politique de confidentialité",
+    icon: <LockIcon size={26} color={colors.white} weight="fill" />,
+    // routeName: "/(modals)/",
+    bgColor: colors.neutral600,
+  },
+  {
+    title: "Déconnexion",
+    icon: <PowerIcon size={26} color={colors.white} weight="fill" />,
+    // routeName: "/(modals)/",
+    bgColor: "#e11d48",
+  },
+];
+
+const handleLogout = async () => {
+  await signOut(auth);
+};
+
+const showLogoutAlert = () => {
+  Alert.alert("Confirmation", "Êtes vous sur de vous déconnecté ?", [
+    {
+      text: "Annuler",
+      onPress: () => console.log("annuler la déconnexion"),
+      style: "cancel",
+    },
+    {
+      text: "Se déconnecter",
+      onPress: () => handleLogout(),
+      style: "destructive",
+    },
+  ]);
+};
 
 const Profile = () => {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const handlePress = (item: accountOptionType) => {
+    if (item.routeName) router.push(item.routeName);
+    if (item.title === "Déconnexion") showLogoutAlert();
+  };
+
   return (
     <ScreenWrapper>
-      <Text>Profile</Text>
-    </ScreenWrapper>
-  )
-}
+      <View style={styles.container}>
+        <Header title="Profil" />
+        <View style={styles.userInfos}>
+          <View>
+            <Image
+              source={getProfileImage(user?.image)}
+              style={styles.avatar}
+              contentFit="cover"
+              transition={100}
+            />
+          </View>
+          <View style={styles.nameContainer}>
+            <Typo size={24} fontWeight={600} color={colors.neutral100}>
+              {user?.name}
+            </Typo>
+            <Typo size={15} color={colors.neutral400}>
+              {user?.email}
+            </Typo>
+          </View>
+        </View>
 
-export default Profile
+        <View style={styles.accountOptions}>
+          {accountOptions.map((item, index) => (
+            <Animated.View
+              key={item.title}
+              entering={FadeInDown.delay(index * 50)
+                .springify()
+                .damping(30)}
+              style={styles.listItem}
+            >
+              <TouchableOpacity
+                style={styles.flexRow}
+                onPress={() => handlePress(item)}
+              >
+                <View
+                  style={[
+                    styles.listIcon,
+                    {
+                      backgroundColor: item?.bgColor,
+                    },
+                  ]}
+                >
+                  {item.icon}
+                </View>
+                <Typo size={16} fontWeight={500} style={{ flex: 1 }}>
+                  {item.title}
+                </Typo>
+                <CaretRightIcon
+                  size={verticalScale(20)}
+                  weight="bold"
+                  color={colors.white}
+                />
+              </TouchableOpacity>
+            </Animated.View>
+          ))}
+        </View>
+      </View>
+    </ScreenWrapper>
+  );
+};
+
+export default Profile;
 
 const styles = StyleSheet.create({
   container: {
@@ -39,8 +164,8 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     position: "absolute",
-    bottom: 5,
-    right: 8,
+    bottom: spacingY._5,
+    right: spacingY._7,
     borderRadius: 50,
     backgroundColor: colors.neutral100,
     shadowColor: colors.black,
@@ -74,4 +199,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacingX._10,
   },
-})
+});
