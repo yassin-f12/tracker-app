@@ -41,7 +41,6 @@ const accountOptions: accountOptionType[] = [
   {
     title: "Déconnexion",
     icon: <PowerIcon size={26} color={colors.white} weight="fill" />,
-    // routeName: "/(modals)/",
     bgColor: "#e11d48",
   },
 ];
@@ -54,7 +53,7 @@ const showLogoutAlert = () => {
   Alert.alert("Confirmation", "Êtes vous sur de vous déconnecté ?", [
     {
       text: "Annuler",
-      onPress: () => console.log("annuler la déconnexion"),
+      onPress: () => {},
       style: "cancel",
     },
     {

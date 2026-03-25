@@ -57,9 +57,9 @@ const ProfileModal = () => {
   };
 
   const onSubmit = async () => {
-    let { name, email, image } = userData;
+    let { name, email } = userData;
     if (!name.trim() || !email.trim()) {
-      Alert.alert("Utilisateur", "Veilliez remplir tout les champs !");
+      Alert.alert("Utilisateur", "Veuillez remplir tous les champs !");
       return;
     }
     if (!user?.uid) return;

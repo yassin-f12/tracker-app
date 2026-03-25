@@ -49,6 +49,9 @@ export const firestoreErrors: Record<string, string> = {
   "invalid-argument": "Données invalides",
   "not-implemented": "Fonctionnalité non disponible",
   "internal": "Erreur interne, réessayez plus tard",
+  "aborted": "Opération annulée",
+  "cancelled": "Requête annulée",
+  "failed-precondition": "Condition non remplie",
 };
 
 export function getFirestoreErrorMessage(error: unknown): string {
