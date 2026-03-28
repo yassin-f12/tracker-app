@@ -78,6 +78,7 @@ export type TransactionType = {
   amount: number;
   category?: string;
   date: Date | Timestamp | string;
+  created?: Date | Timestamp;
   description?: string;
   image?: ImageSource;
   uid?: string;
