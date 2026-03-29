@@ -9,9 +9,11 @@ import { expenseCategories, transactionTypes } from "@/constants/data";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import { useAuth } from "@/contexts/authContext";
 import useFetchData from "@/hooks/useFetchData";
-import { createOrUpdateTransaction } from "@/service/transactionService";
-import { deleteWallet } from "@/service/walletService";
-import { TransactionType, WalletType } from "@/types";
+import {
+  createOrUpdateTransaction,
+  deleteTransaction,
+} from "@/service/transactionService";
+import { ParamType, TransactionType, WalletType } from "@/types";
 import { scale, verticalScale } from "@/utils/styling";
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -19,16 +21,16 @@ import DateTimePicker, {
 import { router, useLocalSearchParams } from "expo-router";
 import { orderBy, where } from "firebase/firestore";
 import { TrashIcon } from "phosphor-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
+  KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
-  KeyboardAvoidingView,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
@@ -57,8 +59,7 @@ const TransactionModal = () => {
     orderBy("created", "desc"),
   ]);
 
-  const oldTransaction: { name: string; image: string; id: string } =
-    useLocalSearchParams();
+  const oldTransaction: ParamType = useLocalSearchParams();
 
   const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate ?? (transaction.date as Date);
@@ -85,9 +86,11 @@ const TransactionModal = () => {
       category,
       date,
       walletId,
-      image,
+      image: image ? image : null,
       uid: user?.uid,
     };
+
+    if (oldTransaction?.id) transactionData.id = oldTransaction.id;
 
     setIsLoading(true);
     const res = await createOrUpdateTransaction(transactionData);
@@ -103,19 +106,36 @@ const TransactionModal = () => {
   const onDelete = async () => {
     if (!oldTransaction?.id) return;
     setIsLoading(true);
-    const res = await deleteWallet(oldTransaction?.id);
+    const res = await deleteTransaction(
+      oldTransaction?.id,
+      oldTransaction.walletId,
+    );
     setIsLoading(false);
     if (res.success) {
       router.back();
     } else {
-      Alert.alert("Portefeuille", res.msg);
+      Alert.alert("Transaction", res.msg);
     }
   };
+
+  useEffect(() => {
+    if (oldTransaction?.id) {
+      setTransaction({
+        type: oldTransaction?.type,
+        amount: Number(oldTransaction.amount),
+        description: oldTransaction.description || "",
+        category: oldTransaction.category || "",
+        date: new Date(oldTransaction.date),
+        walletId: oldTransaction.walletId,
+        image: oldTransaction?.image,
+      });
+    }
+  }, []);
 
   const showDeleteAlert = () => {
     Alert.alert(
       "Confirmer",
-      "Êtes-vous sûr de vouloir supprimer définitivement ce portefeuille ? \nCette action supprimera toutes les transactions liées à ce portefeuille",
+      "Êtes-vous sûr de vouloir supprimer définitivement cette transaction ? ",
       [
         {
           text: "Annuler",
@@ -246,9 +266,7 @@ const TransactionModal = () => {
                   style={styles.dateInput}
                   onPress={() => setShowDatePicker(true)}
                 >
-                  <Typo size={14}>
-                    {date}
-                  </Typo>
+                  <Typo size={14}>{date}</Typo>
                 </Pressable>
               )}
 

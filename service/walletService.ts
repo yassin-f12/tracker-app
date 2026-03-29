@@ -1,6 +1,16 @@
 import { ResponseType, WalletType } from "@/types";
 import { uploadFileToCloudinary } from "./imageService";
-import { collection, deleteDoc, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+  writeBatch,
+} from "firebase/firestore";
 import { firestore } from "@/config/firebase";
 import { getFirestoreErrorMessage } from "@/config/firebaseErrors";
 
@@ -46,14 +56,45 @@ export const createOrUpdateWallet = async (
   }
 };
 
-
-export const deleteWallet = async (walledId: string): Promise<ResponseType> => {
+export const deleteWallet = async (walletId: string): Promise<ResponseType> => {
   try {
-    const walletRef = doc(firestore, "wallets", walledId)
-    await deleteDoc(walletRef)
+    const res = await deleteTransactionByWalletId(walletId);
+    if (!res.success) return res;
 
-    return {success: true, msg: "Portefeuille supprimé avec succès"}
+    const walletRef = doc(firestore, "wallets", walletId);
+    await deleteDoc(walletRef);
+
+    return { success: true, msg: "Portefeuille supprimé avec succès" };
   } catch (error: unknown) {
     return { success: false, msg: getFirestoreErrorMessage(error) };
   }
-}
+};
+
+export const deleteTransactionByWalletId = async (
+  walletId: string,
+): Promise<ResponseType> => {
+  try {
+    const transactionsQuery = query(
+      collection(firestore, "transactions"),
+      where("walletId", "==", walletId),
+    );
+    const transactionsSnapshot = await getDocs(transactionsQuery);
+    if (transactionsSnapshot.size === 0) {
+      return { success: true, msg: "Aucune transaction à supprimer" };
+    }
+
+    const batch = writeBatch(firestore);
+    transactionsSnapshot.forEach((transactionDoc) => {
+      batch.delete(transactionDoc.ref);
+    });
+
+    await batch.commit();
+
+    return {
+      success: true,
+      msg: "Toutes les transactions ont été supprimées avec succès",
+    };
+  } catch (error: unknown) {
+    return { success: false, msg: getFirestoreErrorMessage(error) };
+  }
+};

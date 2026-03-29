@@ -180,6 +180,18 @@ export type WalletType = {
   created?: Date;
 };
 
+export type ParamType = {
+  id: string;
+  type: string;
+  amount: string;
+  category?: string;
+  date:  string;
+  description: string;
+  image?: string;
+  uid?: string;
+  walletId: string;
+}
+
 export type TabBarIconsType = {
   [key: string]: (isFocused: boolean) => React.ReactElement;
 };
