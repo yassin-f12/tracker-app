@@ -192,6 +192,35 @@ export type ParamType = {
   walletId: string;
 }
 
+export type DayData = {
+  day: string;
+  date: string;
+  income: number;
+  expense: number;
+}
+
+export type MonthData = {
+  month: string;
+  fullDate: string;
+  income: number;
+  expense: number;
+}
+
+export type YearData = {
+  year: string;
+  fullDate: string;
+  income: number;
+  expense: number;
+}
+
+export type BarChartItem = {
+  value: number;
+  label?: string;
+  spacing?: number;
+  labelWidth?: number;
+  frontColor: string;
+}
+
 export type TabBarIconsType = {
   [key: string]: (isFocused: boolean) => React.ReactElement;
 };

@@ -1,4 +1,6 @@
-export const getLast7Days = () => {
+import { DayData, MonthData, YearData } from "@/types";
+
+export const getLast7Days = (): DayData[] => {
   const daysOfWeek = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
   const result = [];
 
@@ -15,7 +17,7 @@ export const getLast7Days = () => {
   return result.reverse();
 };
 
-export const getLast12Months = () => {
+export const getLast12Months = (): MonthData[] => {
   const monthsOfYear = [
     "Jan",
     "Fév",
@@ -52,7 +54,7 @@ export const getLast12Months = () => {
   return result.reverse();
 };
 
-export const getYearsRange = (startYear: number, endYear: number): any => {
+export const getYearsRange = (startYear: number, endYear: number): YearData[] => {
   const result = [];
   for (let year = startYear; year <= endYear; year++) {
     result.push({
