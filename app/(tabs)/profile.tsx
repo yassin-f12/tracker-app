@@ -12,7 +12,6 @@ import { useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
 import {
   CaretRightIcon,
-  GearSixIcon,
   LockIcon,
   PowerIcon,
   UserIcon,
@@ -26,11 +25,6 @@ const accountOptions: accountOptionType[] = [
     icon: <UserIcon size={26} color={colors.white} weight="fill" />,
     routeName: "/(modals)/profileModal",
     bgColor: "#6366f1",
-  },
-  {
-    title: "Paramètres",
-    icon: <GearSixIcon size={26} color={colors.white} weight="fill" />,
-    bgColor: "#059669",
   },
   {
     title: "Politique de confidentialité",
