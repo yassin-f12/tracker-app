@@ -5,6 +5,7 @@ import { auth } from "@/config/firebase";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import { useAuth } from "@/contexts/authContext";
 import { getProfileImage } from "@/service/imageService";
+import { deleteAccount } from "@/service/userService";
 import { accountOptionType } from "@/types";
 import { verticalScale } from "@/utils/styling";
 import { Image } from "expo-image";
@@ -14,6 +15,7 @@ import {
   CaretRightIcon,
   LockIcon,
   PowerIcon,
+  TrashIcon,
   UserIcon,
 } from "phosphor-react-native";
 import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
@@ -29,13 +31,18 @@ const accountOptions: accountOptionType[] = [
   {
     title: "Politique de confidentialité",
     icon: <LockIcon size={26} color={colors.white} weight="fill" />,
-    // routeName: "/(modals)/",
+    routeName: "/(modals)/privacyModal",
     bgColor: colors.neutral600,
   },
   {
     title: "Déconnexion",
     icon: <PowerIcon size={26} color={colors.white} weight="fill" />,
     bgColor: "#e11d48",
+  },
+  {
+    title: "Supprimer le compte",
+    icon: <TrashIcon size={26} color={colors.white} weight="fill" />,
+    bgColor: "#7f1d1d",
   },
 ];
 
@@ -62,9 +69,34 @@ const Profile = () => {
   const { user } = useAuth();
   const router = useRouter();
 
+  const showDeleteAlert = () => {
+    Alert.alert(
+      "Supprimer le compte",
+      "Cette action est irréversible. Toutes vos données (transactions, portefeuilles) seront définitivement supprimées.",
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: async () => {
+            if (!user?.uid) return;
+            const res = await deleteAccount(user.uid);
+            if (!res.success) {
+              Alert.alert(
+                "Erreur",
+                res.msg || "Impossible de supprimer le compte",
+              );
+            }
+          },
+        },
+      ],
+    );
+  };
+
   const handlePress = (item: accountOptionType) => {
     if (item.routeName) router.push(item.routeName);
     if (item.title === "Déconnexion") showLogoutAlert();
+    if (item.title === "Supprimer le compte") showDeleteAlert();
   };
 
   return (
