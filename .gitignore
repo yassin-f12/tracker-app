@@ -6,3 +6,4 @@ node_modules
 expo-env.d.ts
 config/firebase.ts
 constants/index.ts
+dist/
