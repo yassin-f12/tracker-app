@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Input from "@/components/Input";
 import ModalWrapper from "@/components/ModalWrapper";
 import Typo from "@/components/Typo";
+import { getFirebaseAuthErrorMessage } from "@/config/firebaseErrors";
 import { colors, spacingX, spacingY } from "@/constants/theme";
 import { useAuth } from "@/contexts/authContext";
 import { getProfileImage } from "@/service/imageService";
@@ -14,7 +15,7 @@ import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { PencilIcon } from "phosphor-react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -31,9 +32,12 @@ const ProfileModal = () => {
     email: "",
     image: null,
   });
+  const [password, setPassword] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     setUserData({
@@ -44,7 +48,6 @@ const ProfileModal = () => {
   }, [user]);
 
   const onPickImage = async () => {
-
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       aspect: [4, 3],
@@ -57,21 +60,45 @@ const ProfileModal = () => {
   };
 
   const onSubmit = async () => {
-    let { name, email } = userData;
+    const { name, email } = userData;
+
     if (!name.trim() || !email.trim()) {
       Alert.alert("Utilisateur", "Veuillez remplir tous les champs !");
       return;
     }
     if (!user?.uid) return;
+
+    const emailChanged = email !== user.email;
+
+    if (emailChanged && !password.trim()) {
+      Alert.alert("Utilisateur", "Mot de passe requis pour changer l'email");
+      return;
+    }
+
     setIsLoading(true);
-    const res = await updateUser(user?.uid, userData);
-    setIsLoading(false);
-    if (res.success) {
-      if (userData.email) await updateUserEmail(userData.email);
-      updateUserData(user?.uid);
+
+    try {
+      if (emailChanged) {
+        await updateUserEmail(email, password);
+        Alert.alert(
+          "Vérification",
+          "Un email de confirmation a été envoyé à votre nouvelle adresse.",
+        );
+      }
+
+      const res = await updateUser(user.uid, userData);
+      if (!res.success) {
+        Alert.alert("Utilisateur", res.msg);
+        setIsLoading(false);
+        return;
+      }
+
+      await updateUserData(user.uid);
       router.back();
-    } else {
-      Alert.alert("Utilisateur", res.msg);
+    } catch (error: unknown) {
+      Alert.alert("Erreur", getFirebaseAuthErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,7 +111,11 @@ const ProfileModal = () => {
           style={{ marginBottom: spacingY._10 }}
         />
 
-        <ScrollView contentContainerStyle={styles.form}>
+        <ScrollView
+          contentContainerStyle={styles.form}
+          ref={scrollViewRef}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.avatarContainer}>
             <Image
               style={styles.avatar}
@@ -113,6 +144,16 @@ const ProfileModal = () => {
               value={userData.email}
               onChangeText={(value) =>
                 setUserData({ ...userData, email: value })
+              }
+            />
+            <Typo color={colors.neutral200}>Mot de passe actuel</Typo>
+            <Input
+              placeholder="Requis pour changer l'email"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              onFocus={() =>
+                scrollViewRef.current?.scrollToEnd({ animated: true })
               }
             />
           </View>

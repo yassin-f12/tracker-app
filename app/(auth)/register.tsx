@@ -27,7 +27,6 @@ const Register = () => {
     setIsLoading(true);
     const res = await registerUser(email.trim().toLowerCase(), password, name);
     setIsLoading(false);
-    console.log('resultat register :', res);
     if (!res.success) {
       Alert.alert("s'enregistrer", res.msg);
     }

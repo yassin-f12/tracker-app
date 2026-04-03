@@ -3,10 +3,12 @@ import { getFirebaseAuthErrorMessage } from "@/config/firebaseErrors";
 import { AuthContextType, UserType } from "@/types";
 import { useRouter } from "expo-router";
 import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  updateEmail,
+  verifyBeforeUpdateEmail,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -45,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return {
         success: false,
         msg: getFirebaseAuthErrorMessage(error),
-      }
+      };
     }
   };
   const register = async (email: string, password: string, name: string) => {
@@ -65,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return {
         success: false,
         msg: getFirebaseAuthErrorMessage(error),
-      }
+      };
     }
   };
 
@@ -87,15 +89,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error: unknown) {
       const msg =
         error instanceof Error ? error.message : "Une erreur est survenue";
-      //  return { success: false, msg };
-      console.log("erreur : ", error);
     }
   };
 
-  const updateUserEmail = async (email: string) => {
-    if (auth.currentUser) {
-      await updateEmail(auth.currentUser, email);
+  const updateUserEmail = async (email: string, password: string) => {
+    const currentUser = auth.currentUser;
+    await currentUser?.reload();
+    if (!currentUser || !currentUser.email) {
+      throw new Error("Utilisateur non connecté");
     }
+
+    const credential = EmailAuthProvider.credential(
+      currentUser.email!,
+      password,
+    );
+    await reauthenticateWithCredential(currentUser, credential);
+    await verifyBeforeUpdateEmail(currentUser, email);
   };
 
   const contextValue: AuthContextType = {

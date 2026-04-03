@@ -1,6 +1,6 @@
 import { colors, spacingY } from "@/constants/theme";
 import { ModalWrapperProps } from "@/types";
-import { Platform, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
 
 const isIos = Platform.OS === "ios";
 
@@ -10,9 +10,12 @@ const ModalWrapper = ({
   bg = colors.neutral800,
 }: ModalWrapperProps) => {
   return (
-    <View style={[styles.container, { backgroundColor: bg }, style]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: bg }, style]}
+      behavior={isIos ? "padding" : "height"}
+    >
       {children}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

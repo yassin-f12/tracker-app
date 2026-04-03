@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Input from "@/components/Input";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import Typo from "@/components/Typo";
 import { auth } from "@/config/firebase";
@@ -8,6 +9,7 @@ import { getProfileImage } from "@/service/imageService";
 import { deleteAccount } from "@/service/userService";
 import { accountOptionType } from "@/types";
 import { verticalScale } from "@/utils/styling";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
@@ -18,7 +20,8 @@ import {
   TrashIcon,
   UserIcon,
 } from "phosphor-react-native";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Alert, Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 const accountOptions: accountOptionType[] = [
@@ -68,35 +71,35 @@ const showLogoutAlert = () => {
 const Profile = () => {
   const { user } = useAuth();
   const router = useRouter();
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const showDeleteAlert = () => {
-    Alert.alert(
-      "Supprimer le compte",
-      "Cette action est irréversible. Toutes vos données (transactions, portefeuilles) seront définitivement supprimées.",
-      [
-        { text: "Annuler", style: "cancel" },
-        {
-          text: "Supprimer",
-          style: "destructive",
-          onPress: async () => {
-            if (!user?.uid) return;
-            const res = await deleteAccount(user.uid);
-            if (!res.success) {
-              Alert.alert(
-                "Erreur",
-                res.msg || "Impossible de supprimer le compte",
-              );
-            }
-          },
-        },
-      ],
-    );
+  const handleDeleteAccount = async () => {
+    if (!user?.uid || !user?.email) return;
+    if (!deletePassword.trim()) {
+      Alert.alert("Erreur", "Veuillez entrer votre mot de passe");
+      return;
+    }
+
+    setIsDeleting(true);
+    const res = await deleteAccount(user.uid, deletePassword);
+    setIsDeleting(false);
+
+    if (res.success) {
+      setDeleteModalVisible(false);
+      setDeletePassword("");
+      await AsyncStorage.clear();
+      return;
+    }
+
+    Alert.alert("Erreur", res.msg || "Impossible de supprimer le compte");
   };
 
   const handlePress = (item: accountOptionType) => {
     if (item.routeName) router.push(item.routeName);
     if (item.title === "Déconnexion") showLogoutAlert();
-    if (item.title === "Supprimer le compte") showDeleteAlert();
+    if (item.title === "Supprimer le compte") setDeleteModalVisible(true);
   };
 
   return (
@@ -158,6 +161,61 @@ const Profile = () => {
           ))}
         </View>
       </View>
+
+      <Modal
+        visible={deleteModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => {
+          setDeleteModalVisible(false);
+          setDeletePassword("");
+        }}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Typo size={17} fontWeight={600} color={colors.neutral100}>
+              Supprimer le compte
+            </Typo>
+            <Typo size={14} color={colors.neutral400} style={{ marginTop: 8 }}>
+              Cette action est irréversible. Toutes vos données seront
+              définitivement supprimées.
+            </Typo>
+            <Input
+              placeholder="Mot de passe actuel"
+              value={deletePassword}
+              onChangeText={setDeletePassword}
+              secureTextEntry
+              containerStyle={{ marginTop: 16 }}
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                onPress={() => {
+                  setDeleteModalVisible(false);
+                  setDeletePassword("");
+                }}
+                style={[
+                  styles.modalBtn,
+                  { backgroundColor: colors.neutral700 },
+                ]}
+              >
+                <Typo color={colors.white}>Annuler</Typo>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleDeleteAccount}
+                disabled={isDeleting}
+                style={[
+                  styles.modalBtn,
+                  { backgroundColor: "#7f1d1d", opacity: isDeleting ? 0.6 : 1 },
+                ]}
+              >
+                <Typo color={colors.white}>
+                  {isDeleting ? "Suppression..." : "Supprimer"}
+                </Typo>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScreenWrapper>
   );
 };
@@ -184,8 +242,6 @@ const styles = StyleSheet.create({
     height: verticalScale(135),
     width: verticalScale(135),
     borderRadius: 200,
-    // overflow: "hidden",
-    // position: "relative",
   },
   editIcon: {
     position: "absolute",
@@ -223,5 +279,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: spacingX._10,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: spacingX._20,
+  },
+  modalBox: {
+    backgroundColor: colors.neutral800,
+    borderRadius: 16,
+    padding: spacingX._20,
+    width: "100%",
+  },
+  modalButtons: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: spacingY._20,
+  },
+  modalBtn: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
   },
 });

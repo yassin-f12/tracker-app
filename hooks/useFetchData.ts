@@ -17,6 +17,12 @@ const useFetchData = <T>(
 
   useEffect(() => {
     if (!collectionName) return;
+
+    const hasInvalidConstraints = constraints.some(
+      (c) => c === undefined || c === null
+    );
+    if (hasInvalidConstraints) return;
+
     const collectionRef = collection(firestore, collectionName);
     const q = query(collectionRef, ...constraints);
 
@@ -34,12 +40,12 @@ const useFetchData = <T>(
       },
       (err) => {
         setError(err.message);
-        setLoading;
+        setLoading(false);
       },
     );
 
     return () => unsub();
-  });
+  }, [collectionName]);
   return { data, loading, error };
 };
 

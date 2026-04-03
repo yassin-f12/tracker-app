@@ -1,5 +1,8 @@
 import { auth, firestore } from "@/config/firebase";
-import { getFirestoreErrorMessage } from "@/config/firebaseErrors";
+import {
+  getFirebaseAuthErrorMessage,
+  getFirestoreErrorMessage,
+} from "@/config/firebaseErrors";
 import { ResponseType, UserDataType } from "@/types";
 import {
   collection,
@@ -11,7 +14,8 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { uploadFileToCloudinary } from "./imageService";
-import { deleteUser as firebaseDeleteUser } from "firebase/auth";
+import { EmailAuthProvider, deleteUser as firebaseDeleteUser, reauthenticateWithCredential } from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 
 export const updateUser = async (
   uid: string,
@@ -43,8 +47,24 @@ export const updateUser = async (
   }
 };
 
-export const deleteAccount = async (uid: string): Promise<ResponseType> => {
+export const deleteAccount = async (
+  uid: string,
+  password: string,
+): Promise<ResponseType> => {
+  if (!uid) {
+    return { success: false, msg: "Utilisateur introuvable" };
+  }
+
   try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return { success: false, msg: "Utilisateur non connecté" };
+    }
+
+    await currentUser.reload();
+    const credential = EmailAuthProvider.credential(currentUser.email!, password);
+    await reauthenticateWithCredential(currentUser, credential);
+
     const batch = writeBatch(firestore);
 
     const transactionsSnapshot = await getDocs(
@@ -58,15 +78,17 @@ export const deleteAccount = async (uid: string): Promise<ResponseType> => {
     walletsSnapshot.forEach((doc) => batch.delete(doc.ref));
 
     batch.delete(doc(firestore, "utilisateurs", uid));
-
     await batch.commit();
 
-    if (auth.currentUser) {
-      await firebaseDeleteUser(auth.currentUser);
-    }
+    await firebaseDeleteUser(currentUser);
 
     return { success: true, msg: "Compte supprimé avec succès" };
   } catch (error: unknown) {
-    return { success: false, msg: getFirestoreErrorMessage(error) };
+    const isAuthError =
+      error instanceof FirebaseError && error.code.startsWith("auth/");
+    const msg = isAuthError
+      ? getFirebaseAuthErrorMessage(error)
+      : getFirestoreErrorMessage(error);
+    return { success: false, msg };
   }
 };
