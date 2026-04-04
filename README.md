@@ -43,43 +43,29 @@ cd tracker-app
 npm install
 ```
 
-### 2. Configurer Firebase
+### 2. Configurer les variables d'environnement, Firebase et Cloudinary
+
+Crée un fichier `.env.local` à la racine du projet :
+
+```env
+
+EXPO_PUBLIC_FIREBASE_API_KEY=ta-clé
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=ton-projet.firebaseapp.com
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=ton-projet
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=ton-projet.appspot.com
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=000000000000
+EXPO_PUBLIC_FIREBASE_APP_ID=1:000000000000:web:xxxxxx
+
+EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME=ton-cloud-name
+EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET=ton-upload-preset
 
 Crée un projet sur [Firebase Console](https://console.firebase.google.com), active **Authentication** (email/password) et **Firestore**.
 
-Copie le fichier exemple et remplis avec tes clés :
-```bash
-cp config/firebase_example.ts config/firebase.ts
-```
-
-Dans `config/firebase.ts` :
-```typescript
-const firebaseConfig = {
-  apiKey: "ta-clé",
-  authDomain: "ton-projet.firebaseapp.com",
-  projectId: "ton-projet",
-  storageBucket: "ton-projet.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "1:000000000000:web:xxxxxx",
-};
-```
-
-### 3. Configurer Cloudinary
-
 Crée un compte sur [Cloudinary](https://cloudinary.com) et récupère ton **Cloud Name** et un **Upload Preset** (non signé).
 
-Copie le fichier exemple et remplis avec tes clés :
-```bash
-cp constants/index_example.ts constants/index.ts
 ```
 
-Dans `constants/index.ts` :
-```typescript
-export const CLOUDINARY_CLOUD_NAME = "ton-cloud-name";
-export const CLOUDINARY_UPLOAD_PRESET = "ton-upload-preset";
-```
-
-### 4. Configurer les règles Firestore
+### 3. Configurer les règles Firestore
 
 Dans la console Firebase > Firestore > Règles, applique :
 ```
