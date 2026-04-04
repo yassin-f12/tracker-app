@@ -52,6 +52,9 @@ const Login = () => {
           <Input
             placeholder="Votre e-mail"
             value={email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            returnKeyType="next"
             onChangeText={(value) => setEmail(value.trim().toLowerCase())}
             icon={
               <AtIcon
@@ -64,7 +67,9 @@ const Login = () => {
           <Input
             placeholder="Votre mot de passe"
             value={password}
-            secureTextEntry
+            secureTextEntry={true}
+            autoCapitalize="none"
+            returnKeyType="done"
             onChangeText={setPassword}
             icon={
               <LockIcon

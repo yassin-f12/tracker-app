@@ -70,6 +70,7 @@ const SearchModal = () => {
               placeholder="Rechercher une transaction..."
               value={search}
               placeholderTextColor={colors.neutral400}
+              returnKeyType="search"
               containerStyle={{ backgroundColor: colors.neutral800 }}
               onChangeText={(value) => setSearch(value)}
             />

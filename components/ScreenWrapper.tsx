@@ -1,26 +1,41 @@
-import { Dimensions, Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
-import { ScreenWrapperProps } from '@/types'
-import { colors } from '@/constants/theme';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { ScreenWrapperProps } from "@/types";
+import { colors } from "@/constants/theme";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const {height} = Dimensions.get('window');
+const ScreenWrapper = ({ style, children }: ScreenWrapperProps) => {
+  const insets = useSafeAreaInsets();
 
-const ScreenWrapper = ({style, children}: ScreenWrapperProps) => {
-    let paddingTop = Platform.OS == 'ios'? height * 0.06 : 0;
   return (
-    <View 
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={[
-            {
-                paddingTop,
-                flex: 1,
-                backgroundColor: colors.neutral900
-            },
-        style]}>
-            <StatusBar barStyle="light-content" backgroundColor={colors.neutral900}/>
-            {children}
-    </View>
-  )
-}
+          {
+            paddingTop: insets.top,
+            flex: 1,
+            backgroundColor: colors.neutral900,
+          },
+          style,
+        ]}
+      >
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor={colors.neutral900}
+        />
+        {children}
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
+  );
+};
 
-export default ScreenWrapper
+export default ScreenWrapper;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

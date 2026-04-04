@@ -50,6 +50,7 @@ const Register = () => {
           <Input
             placeholder="Votre pseudo"
             value={name}
+            returnKeyType="next"
             onChangeText={setName}
             icon={
               <UserIcon
@@ -62,6 +63,9 @@ const Register = () => {
           <Input
             placeholder="Votre e-mail"
             value={email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            returnKeyType="next"
             onChangeText={(value) => setEmail(value.trim().toLowerCase())}
             icon={
               <AtIcon
@@ -74,7 +78,9 @@ const Register = () => {
           <Input
             placeholder="Votre mot de passe"
             value={password}
-            secureTextEntry
+            secureTextEntry={true}
+            autoCapitalize="none"
+            returnKeyType="done"
             onChangeText={setPassword}
             icon={
               <LockIcon

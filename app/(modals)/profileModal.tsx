@@ -142,6 +142,7 @@ const ProfileModal = () => {
             <Input
               placeholder="Email"
               value={userData.email}
+              keyboardType="email-address"
               onChangeText={(value) =>
                 setUserData({ ...userData, email: value })
               }
@@ -151,7 +152,8 @@ const ProfileModal = () => {
               placeholder="Requis pour changer l'email"
               value={password}
               onChangeText={setPassword}
-              secureTextEntry
+              secureTextEntry={true}
+              autoCapitalize="none"
               onFocus={() =>
                 scrollViewRef.current?.scrollToEnd({ animated: true })
               }
