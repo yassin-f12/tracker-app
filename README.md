@@ -59,11 +59,12 @@ EXPO_PUBLIC_FIREBASE_APP_ID=1:000000000000:web:xxxxxx
 EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME=ton-cloud-name
 EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET=ton-upload-preset
 
+```
+
 Crée un projet sur [Firebase Console](https://console.firebase.google.com), active **Authentication** (email/password) et **Firestore**.
 
 Crée un compte sur [Cloudinary](https://cloudinary.com) et récupère ton **Cloud Name** et un **Upload Preset** (non signé).
 
-```
 
 ### 3. Configurer les règles Firestore
 
@@ -114,6 +115,11 @@ Ce projet m'a permis de progresser sur :
 - Le flux complet d'upload d'images avec Cloudinary
 
 ---
+
+## 📱 Tester l'app
+
+- **Android** : [Télécharger l'APK](https://expo.dev/accounts/yasdevfs/projects/tracker-app/builds/3765f356-61cc-449f-9ca5-964373a77196)
+- **iOS** : via Expo Go — [Portfolio](https://yassin-f12.github.io/Portfolio---Yassin-Fahem-/)
 
 ## 👤 Auteur
 
