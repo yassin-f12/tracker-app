@@ -32,13 +32,13 @@ const Welcome = () => {
             <Animated.View 
               entering={FadeInDown.duration(1000).springify().damping(40)} 
             >
-              <Typo size={28} fontWeight={800} textAlign="center">Toujours prendre le contrôle de vos finance</Typo>
+              <Typo size={28} fontWeight={800} textAlign="center">Prendre le contrôle de ses finances</Typo>
             </Animated.View>
 
             <Animated.View
               entering={FadeInDown.duration(1000).delay(100).springify().damping(40)}
             >
-              <Typo size={17} color={colors.textLight} textAlign="center">Il faut organiser ses finances pour se garantir un meilleur niveau de vie à l'avenir</Typo>
+              <Typo size={17} color={colors.textLight} textAlign="center">Des finances plus claires, une vie plus simple</Typo>
             </Animated.View>
 
             <Animated.View 
