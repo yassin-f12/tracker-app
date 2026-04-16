@@ -12,24 +12,24 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/authContext";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [ isLoading, setIsLoading ] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { login: loginUser } = useAuth(); 
+  const { login: loginUser } = useAuth();
 
   const handleSubmit = async () => {
-    if(!email || !password) {
-      Alert.alert('Se connecter', "Les champs sont vides")
-      return
+    if (!email || !password) {
+      Alert.alert("Se connecter", "Les champs sont vides");
+      return;
     }
     setIsLoading(true);
     const res = await loginUser(email.trim().toLowerCase(), password);
     setIsLoading(false);
-    if(!res.success) {
+    if (!res.success) {
       Alert.alert("connexion :", res.msg);
     }
-  }
+  };
 
   return (
     <ScreenWrapper>
@@ -80,11 +80,21 @@ const Login = () => {
             }
           />
 
-          <Typo size={14} color={colors.text} style={{ alignSelf: 'flex-end' }}>
-            Mot de passe oublié ?
-          </Typo>
+          <Pressable onPress={() => router.navigate("/(auth)/forgotPassword")}>
+            <Typo
+              size={14}
+              color={colors.primary}
+              style={{ alignSelf: "flex-end" }}
+            >
+              Mot de passe oublié ?
+            </Typo>
+          </Pressable>
 
-          <Button loading={isLoading} onPress={handleSubmit} disabled={!email || !password || isLoading}>
+          <Button
+            loading={isLoading}
+            onPress={handleSubmit}
+            disabled={!email || !password || isLoading}
+          >
             <Typo fontWeight={700} color={colors.black} size={21}>
               Se connecter
             </Typo>
@@ -94,7 +104,9 @@ const Login = () => {
         <View style={styles.footer}>
           <Typo size={15}>Vous n'avez pas encore de compte ?</Typo>
           <Pressable onPress={() => router.navigate("/(auth)/register")}>
-            <Typo size={15} fontWeight={700} color={colors.primary}>Créer mon compte</Typo>
+            <Typo size={15} fontWeight={700} color={colors.primary}>
+              Créer mon compte
+            </Typo>
           </Pressable>
         </View>
       </View>

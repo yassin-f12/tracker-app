@@ -9,6 +9,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   verifyBeforeUpdateEmail,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -107,6 +108,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await verifyBeforeUpdateEmail(currentUser, email);
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        msg: getFirebaseAuthErrorMessage(error),
+      };
+    }
+  };
+
   const contextValue: AuthContextType = {
     user,
     setUser,
@@ -114,6 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     register,
     updateUserData,
     updateUserEmail,
+    resetPassword,
   };
 
   return (
