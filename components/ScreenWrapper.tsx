@@ -9,6 +9,7 @@ import {
 import { ScreenWrapperProps } from "@/types";
 import { colors } from "@/constants/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { verticalScale } from "@/utils/styling";
 
 const ScreenWrapper = ({ style, children }: ScreenWrapperProps) => {
   const insets = useSafeAreaInsets();
@@ -16,10 +17,12 @@ const ScreenWrapper = ({ style, children }: ScreenWrapperProps) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior="padding"
+        keyboardVerticalOffset={Platform.OS === "android" ? verticalScale(20) : 0}
         style={[
           {
             paddingTop: insets.top,
+            paddingBottom: insets.bottom,
             flex: 1,
             backgroundColor: colors.neutral900,
           },

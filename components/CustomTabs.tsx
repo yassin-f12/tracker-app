@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderTopColor: colors.neutral700,
     borderTopWidth: 1,
+    paddingBottom: Platform.OS === "android" ? verticalScale(8) : 0,
   },
   tabBarItem: {
     marginBottom: Platform.OS == "ios" ? spacingY._10 : spacingY._5,
