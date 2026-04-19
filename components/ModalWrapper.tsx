@@ -1,11 +1,11 @@
 import { colors, spacingY } from "@/constants/theme";
 import { ModalWrapperProps } from "@/types";
+import { verticalScale } from "@/utils/styling";
 import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  TouchableWithoutFeedback,
 } from "react-native";
 
 const isIos = Platform.OS === "ios";
@@ -16,14 +16,13 @@ const ModalWrapper = ({
   bg = colors.neutral800,
 }: ModalWrapperProps) => {
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <KeyboardAvoidingView
-        behavior={isIos ? "padding" : "height"}
-        style={[styles.container, { backgroundColor: bg }, style]}
-      >
-        {children}
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === "ios" ? verticalScale(50) : verticalScale(20)}
+      style={[styles.container, { backgroundColor: bg }, style]}
+    >
+      {children}
+    </KeyboardAvoidingView>
   );
 };
 

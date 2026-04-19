@@ -1,4 +1,11 @@
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useRef, useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { colors, spacingX, spacingY } from "@/constants/theme";
@@ -33,7 +40,11 @@ const Login = () => {
 
   return (
     <ScreenWrapper>
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <BackButton iconSize={28} />
 
         <View style={{ gap: 5, marginTop: spacingY._20 }}>
@@ -102,14 +113,14 @@ const Login = () => {
         </View>
 
         <View style={styles.footer}>
-          <Typo size={15}>Vous n'avez pas encore de compte ?</Typo>
+          <Typo size={15} textAlign={"center"}>Vous n'avez pas encore de compte ?</Typo>
           <Pressable onPress={() => router.navigate("/(auth)/register")}>
             <Typo size={15} fontWeight={700} color={colors.primary}>
               Créer mon compte
             </Typo>
           </Pressable>
         </View>
-      </View>
+      </ScrollView>
     </ScreenWrapper>
   );
 };
@@ -118,9 +129,10 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1, 
     gap: spacingY._20,
     paddingHorizontal: spacingX._20,
+    paddingBottom: spacingY._40,
   },
   welcomeText: {
     fontSize: verticalScale(20),

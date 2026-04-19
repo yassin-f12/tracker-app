@@ -1,4 +1,11 @@
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useRef, useState } from "react";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { colors, spacingX, spacingY } from "@/constants/theme";
@@ -34,7 +41,11 @@ const Register = () => {
 
   return (
     <ScreenWrapper>
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <BackButton iconSize={28} />
 
         <View style={{ marginTop: spacingY._20 }}>
@@ -110,7 +121,7 @@ const Register = () => {
             </Typo>
           </Pressable>
         </View>
-      </View>
+      </ScrollView>
     </ScreenWrapper>
   );
 };
@@ -119,9 +130,10 @@ export default Register;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     gap: spacingY._20,
     paddingHorizontal: spacingX._20,
+    paddingBottom: spacingY._40,
   },
   welcomeText: {
     fontSize: verticalScale(20),
