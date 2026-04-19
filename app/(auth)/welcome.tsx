@@ -4,6 +4,7 @@ import Typo from "@/components/Typo";
 import { colors, spacingX, spacingY } from "@/constants/theme";
 import { scale, verticalScale } from "@/utils/styling";
 import { useRouter } from "expo-router";
+import { Platform } from "react-native";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
@@ -84,9 +85,11 @@ const styles = StyleSheet.create({
     gap: spacingY._25,
     shadowColor: "white",
     shadowOffset: { width: 0, height: -10 },
-    elevation: 10,
     shadowRadius: 25,
     shadowOpacity: 0.15,
+    elevation: Platform.OS === "android" ? 0 : 10,
+    borderTopWidth: Platform.OS === "android" ? 1 : 0,
+    borderTopColor: colors.neutral700,       
   },
   buttonContainer: {
     width: "100%",
