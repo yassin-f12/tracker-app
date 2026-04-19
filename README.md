@@ -118,7 +118,7 @@ Ce projet m'a permis de progresser sur :
 
 ## 📱 Tester l'app
 
-- **Android** : [Télécharger l'APK](https://github.com/yassin-f12/tracker-app/releases/download/v1.0.0/application-3765f356-61cc-449f-9ca5-964373a77196.apk)
+- **Android** : [Télécharger l'APK](https://github.com/yassin-f12/tracker-app/releases/download/v1.0.0/application-d13ce239-4711-438e-923f-e257346d10d5.apk)
 - **iOS** : via Expo Go — [Expo go](https://expo.dev/preview/update?message=fix%3A+Android+layout%2C+keyboard+and+shadow+issues&updateRuntimeVersion=1.0.0&createdAt=2026-04-19T13%3A41%3A19.954Z&slug=exp&projectId=92ecb343-9a23-407a-b887-a22915c71c4f&group=6bd20ca7-dad0-488d-8602-32e002277730)
 
 ## 👤 Auteur
