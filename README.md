@@ -118,8 +118,8 @@ Ce projet m'a permis de progresser sur :
 
 ## 📱 Tester l'app
 
-- **Android** : [Télécharger l'APK](https://expo.dev/accounts/yasdevfs/projects/tracker-app/builds/3765f356-61cc-449f-9ca5-964373a77196)
-- **iOS** : via Expo Go — [Portfolio](https://yassin-f12.github.io/Portfolio---Yassin-Fahem-/)
+- **Android** : [Télécharger l'APK](https://github.com/yassin-f12/tracker-app/releases/download/v1.0.0/application-3765f356-61cc-449f-9ca5-964373a77196.apk)
+- **iOS** : via Expo Go — [Expo go](https://expo.dev/preview/update?message=update+password+forget&updateRuntimeVersion=1.0.0&createdAt=2026-04-16T13%3A47%3A48.695Z&slug=exp&projectId=92ecb343-9a23-407a-b887-a22915c71c4f&group=baaf39d4-1e9c-4bf0-a319-0e974a0ee6a1)
 
 ## 👤 Auteur
 
